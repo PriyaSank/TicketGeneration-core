@@ -44,6 +44,16 @@ public class UserDAO implements InterfaceDAO<UserModel> {
 			return user;
 		});
 	}
+	public UserModel getUserId(String emailId)
+	{
+		final String sql="select id from tbl_users where email_id=?";
+		final Object[] params={emailId};
+		return jdbcTemplate.queryForObject(sql,params,(rs,rowNo)->{
+			UserModel user=new UserModel();
+			user.setId(rs.getInt("id"));
+			return user;
+		});
+	}
 	@Override
 	public List<UserModel> listAll() {
 
