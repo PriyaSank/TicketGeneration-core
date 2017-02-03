@@ -4,8 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.ticket.exception.PersistenceException;
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.EmployeeModel;
 import com.ticket.model.RoleModel;
@@ -21,7 +23,21 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 				emp.getDept().getId() };
 		jdbcTemplate.update(sql, params);
 	}
-
+	public String getPassword(String emailId) throws PersistenceException
+	{
+		try{
+			
+		
+		final String sql="select password from tbl_employees where email_id=?";
+		final Object[] params={emailId};
+		return jdbcTemplate.queryForObject(sql,params,String.class);
+		}
+		catch(EmptyResultDataAccessException e)
+		{
+			throw new PersistenceException("Invalid Id",e);
+		}
+		
+	}
 	@Override
 	public void update(EmployeeModel emp) {
 		final String sql = "update tbl_employees set password=? where email_id=?";
