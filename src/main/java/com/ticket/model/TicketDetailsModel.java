@@ -10,6 +10,7 @@ public class TicketDetailsModel {
 	private DepartmentModel dept;
 	private String subject;
 	private String description;
+	private PriorityModel prior;
 	private LocalDateTime openTimestamp;
 	private EmployeeModel emp;
 	private LocalDateTime updateTimestamp;

@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.EmployeeModel;
+import com.ticket.model.PriorityModel;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
 import com.ticket.util.ConnectionUtil;
@@ -19,23 +20,34 @@ public class TicketDetailsDAO  {
 	
 	public List<TicketDetailsModel> listAll() {
 
-		final String sql = "select id,user_id,department_id,subject,description,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details";
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details";
 		return jdbcTemplate.query(sql, (rs, rownum) -> convert(rs));
 		
 	}
 	public List<TicketDetailsModel> listByUserId(int userId) {
 
-		final String sql = "select id,user_id,department_id,subject,description,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where user_id=?";
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where user_id=?";
 		final Object[] params={userId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
 		
 	}
 
-
+public TicketDetailsModel getStatus(int ticId){
+	final String sql="select status from tbl_ticket_details where id=?";
+	final Object[] params={ticId};
+	return jdbcTemplate.queryForObject(sql,params,(rs,rowNo)->{
+		TicketDetailsModel tic=new TicketDetailsModel();
+		tic.setStatus(rs.getString("status"));
+		return tic; 
+	}
+);
+	
+}
 	private TicketDetailsModel convert(ResultSet rs) throws SQLException {
 		TicketDetailsModel tic=new TicketDetailsModel();
 		UserModel user=new UserModel();
 		DepartmentModel dep=new DepartmentModel();
+		PriorityModel pri=new PriorityModel();
 		tic.setId(rs.getInt("id"));
 		user.setId(rs.getInt("user_id"));
 		tic.setUser(user);
@@ -43,6 +55,8 @@ public class TicketDetailsDAO  {
 		tic.setDept(dep);
 		tic.setSubject(rs.getString("subject"));
 		tic.setDescription(rs.getString("description"));
+		pri.setId(rs.getInt("priority_id"));
+		tic.setPrior(pri);
 		tic.setOpenTimestamp(rs.getTimestamp("open_timestamp").toLocalDateTime());
 		EmployeeModel emp=new EmployeeModel();
 		emp.setId(rs.getInt("employee_id"));

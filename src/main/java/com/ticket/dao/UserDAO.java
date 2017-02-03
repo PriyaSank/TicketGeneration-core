@@ -4,22 +4,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.ticket.exception.PersistenceException;
 import com.ticket.model.UserModel;
 import com.ticket.util.ConnectionUtil;
 
-public class UserDAO implements InterfaceDAO<UserModel> {
+public class UserDAO {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
-	@Override
-	public void save(UserModel user) {
+
+	public void save(UserModel user)  throws PersistenceException{
+		try{
 		final String sql = "insert into tbl_users(name,email_id,password) values (?,?,?)";
 		final Object[] params = { user.getName(), user.getEmailId(), user.getPassword() };
 		jdbcTemplate.update(sql, params);
+		}
+		catch(DuplicateKeyException e){
+			throw new PersistenceException("Email Id already exists",e);
+		}
 	}
 
-	@Override
+	
 	public void update(UserModel user) {
 		final String sql = "update tbl_users set password=? where email_id=?";
 		final Object[] params = { user.getPassword(), user.getEmailId() };
@@ -27,34 +35,35 @@ public class UserDAO implements InterfaceDAO<UserModel> {
 
 	}
 
-	@Override
+	
 	public void updateAsInactive(UserModel user) {
 
 		final String sql = "update tbl_users set active=? where email_id=?";
 		final Object[] params = { user.getActive(), user.getEmailId() };
 		jdbcTemplate.update(sql, params);
 	}
-	public UserModel getPassword(String emailId)
+	public String getPassword(String emailId) throws PersistenceException
 	{
+		try{
+			
+		
 		final String sql="select password from tbl_users where email_id=?";
 		final Object[] params={emailId};
-		return jdbcTemplate.queryForObject(sql,params,(rs,rowNo)->{
-			UserModel user=new UserModel();
-			user.setPassword(rs.getString("password"));
-			return user;
-		});
+		return jdbcTemplate.queryForObject(sql,params,String.class);
+		}
+		catch(EmptyResultDataAccessException e)
+		{
+			throw new PersistenceException("Invalid Id",e);
+		}
+		
 	}
-	public UserModel getUserId(String emailId)
+	public Integer getUserId(String emailId)
 	{
 		final String sql="select id from tbl_users where email_id=?";
 		final Object[] params={emailId};
-		return jdbcTemplate.queryForObject(sql,params,(rs,rowNo)->{
-			UserModel user=new UserModel();
-			user.setId(rs.getInt("id"));
-			return user;
-		});
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
 	}
-	@Override
+
 	public List<UserModel> listAll() {
 
 		final String sql = "select id,name,email_id,password,active from tbl_users";
@@ -75,7 +84,7 @@ public class UserDAO implements InterfaceDAO<UserModel> {
 		
 	}
 
-	@Override
+	
 	public UserModel listById(int id) {
 
 		final String sql = "select id,name,email_id,password,active from tbl_users where id=?";
