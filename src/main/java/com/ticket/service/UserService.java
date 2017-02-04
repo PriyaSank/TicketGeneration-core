@@ -11,6 +11,7 @@ import com.ticket.exception.ValidationException;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
 import com.ticket.validation.LoginValidation;
+import com.ticket.validation.UserValidation;
 
 
 public class UserService {
@@ -18,6 +19,7 @@ public class UserService {
 	com.ticket.validation.UserValidation val=new com.ticket.validation.UserValidation();
 	LoginValidation logval=new LoginValidation();
 	UserLoginDAO uLog=new UserLoginDAO();
+	UserValidation userval=new UserValidation();
 	TicketGenerationDAO ticGen=new TicketGenerationDAO();
 	TicketDetailsDAO ticDAO=new TicketDetailsDAO();
 	UserModule userMod=new UserModule();
@@ -75,6 +77,7 @@ public String updateTicketStatus(String emailId, String pwd,int ticketId,String 
 	try{
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd)){
+		userval.validateId(ticketId);	
 	return userMod.updateTicket(emailId, pwd, ticketId, ticketStatus);
 	}
 	return "Login unsuccessful";
@@ -90,6 +93,7 @@ public String closeTicket(String emailId, String pwd,int ticketId) throws Servic
 	try{
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd)){
+	userval.validateId(ticketId);	
 	return userMod.closeTicket(emailId, pwd, ticketId);
 	}
 	return "Login unsuccessful";

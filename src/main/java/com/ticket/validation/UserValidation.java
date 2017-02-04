@@ -27,5 +27,7 @@ public class UserValidation {
 	public void validateListById(UserModel user) throws ValidationException {
 		ValidationUtil.isInvalidNumber(user.getId(), "InvalidID");
 	}
-
+	public void validateId(int ticId) throws ValidationException {
+		ValidationUtil.isInvalidNumber(ticId, "InvalidID");
+	}
 }
