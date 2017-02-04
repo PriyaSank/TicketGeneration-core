@@ -14,8 +14,7 @@ public class UserModule {
  public String closeTicket(String emailId,String pwd,Integer ticketId) throws DataAccessException, PersistenceException{
 
 
-	if(log.logIn(emailId,pwd))
-	{
+	
 		
 		if("CLOSED".equals(tic.getStatus(ticketId).getStatus())){
 			
@@ -31,15 +30,14 @@ public class UserModule {
 		jdbcTemplate.update(sql2,params2);
 		return "Ticket Closed";
 			}
-	}
-	return "Enter proper username and password";
+	
 }
 public String updateTicket(String emailId,String pwd,Integer ticketId,String ticketStatus) throws DataAccessException, PersistenceException{
 	
-	if(log.logIn(emailId,pwd))
-	{
+
+	
 		if("CLOSED".equals(tic.getStatus(ticketId).getStatus())){
-		return "Status is already closed";
+		return "Ticket is already closed";
 	}
 		else
 		{
@@ -51,7 +49,6 @@ public String updateTicket(String emailId,String pwd,Integer ticketId,String tic
 			return "Ticket status updated";
 		}
 	}
-	return "Enter proper username and password";
-}
+	
 
 }

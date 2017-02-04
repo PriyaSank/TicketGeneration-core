@@ -1,8 +1,10 @@
 package com.ticket.service;
 
+import com.ticket.dao.TicketDetailsDAO;
 import com.ticket.dao.TicketGenerationDAO;
 import com.ticket.dao.UserDAO;
 import com.ticket.dao.UserLoginDAO;
+import com.ticket.dao.UserModule;
 import com.ticket.exception.PersistenceException;
 import com.ticket.exception.ServiceException;
 import com.ticket.exception.ValidationException;
@@ -17,11 +19,14 @@ public class UserService {
 	LoginValidation logval=new LoginValidation();
 	UserLoginDAO uLog=new UserLoginDAO();
 	TicketGenerationDAO ticGen=new TicketGenerationDAO();
-public void register(UserModel user) throws ServiceException {
+	TicketDetailsDAO ticDAO=new TicketDetailsDAO();
+	UserModule userMod=new UserModule();
+public String register(UserModel user) throws ServiceException {
 	
 	try{
 		val.validateSave(user);
 		userDAO.save(user);
+		return "Registration is successful";
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
@@ -31,10 +36,15 @@ public void register(UserModel user) throws ServiceException {
 		}
 }
 
-public void logIn(String emailId, String pwd) throws ServiceException{
+public String logIn(String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
-	uLog.logIn(emailId, pwd);	
+	
+	if(uLog.logIn(emailId, pwd))
+	{
+		return "Login is successful";
+	}
+	return "Login unsuccessful";
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
@@ -43,13 +53,31 @@ public void logIn(String emailId, String pwd) throws ServiceException{
 		throw new ServiceException ("Try a diff email id",e);	
 		}
 }
-public void ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) throws ServiceException{
+public String ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd))
 	{
 	ticGen.ticketGenerate(tic);
+	return "Ticket Generation is successful";
 	}
+	return "Ticket Generation is unsuccessful";
+	}
+	catch(ValidationException e){
+	throw new ServiceException ("Enter proper inputs",e);	
+	}
+	catch(PersistenceException e){
+		throw new ServiceException ("Try a diff email id",e);	
+		}
+	
+}
+public String updateTicketStatus(String emailId, String pwd,int ticketId,String ticketStatus) throws ServiceException{
+	try{
+	logval.validateLogin(emailId, pwd);
+	if(uLog.logIn(emailId, pwd)){
+	return userMod.updateTicket(emailId, pwd, ticketId, ticketStatus);
+	}
+	return "Login unsuccessful";
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
@@ -58,5 +86,35 @@ public void ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) 
 		throw new ServiceException ("Try a diff email id",e);	
 		}
 }
-
+public String closeTicket(String emailId, String pwd,int ticketId) throws ServiceException{
+	try{
+	logval.validateLogin(emailId, pwd);
+	if(uLog.logIn(emailId, pwd)){
+	return userMod.closeTicket(emailId, pwd, ticketId);
+	}
+	return "Login unsuccessful";
+	}
+	catch(ValidationException e){
+	throw new ServiceException ("Enter proper inputs",e);	
+	}
+	catch(PersistenceException e){
+		throw new ServiceException ("Try a diff email id",e);	
+		}
+}
+public String viewTicket(String emailId, String pwd) throws ServiceException{
+	try{
+	logval.validateLogin(emailId, pwd);
+	if(uLog.logIn(emailId, pwd)){
+	int userId=userDAO.getUserId(emailId);
+	ticDAO.listByUserId(userId);
+	}
+	return "Login unsuccessful";
+	}
+	catch(ValidationException e){
+	throw new ServiceException ("Enter proper inputs",e);	
+	}
+	catch(PersistenceException e){
+		throw new ServiceException ("Try a diff email id",e);	
+		}
+}
 }
