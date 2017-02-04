@@ -46,8 +46,10 @@ public void logIn(String emailId, String pwd) throws ServiceException{
 public void ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
-	uLog.logIn(emailId, pwd);
+	if(uLog.logIn(emailId, pwd))
+	{
 	ticGen.ticketGenerate(tic);
+	}
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
