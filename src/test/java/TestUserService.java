@@ -11,6 +11,6 @@ UserModel user=new UserModel();
 user.setEmailId("bharat@gmail.com");
 user.setPassword("Bhary");
 user.setName("Bharat");
-serv.save(user);
+//serv.save(user);
 }
 }

@@ -38,6 +38,21 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		}
 		
 	}
+	public Integer getId(String emailId) throws PersistenceException
+	{
+		try{
+			
+		
+		final String sql="select id from tbl_employees where email_id=?";
+		final Object[] params={emailId};
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
+		}
+		catch(EmptyResultDataAccessException e)
+		{
+			throw new PersistenceException("Invalid MailId",e);
+		}
+		
+	}
 	@Override
 	public void update(EmployeeModel emp) {
 		final String sql = "update tbl_employees set password=? where email_id=?";

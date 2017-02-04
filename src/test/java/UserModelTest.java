@@ -10,7 +10,7 @@ public class UserModelTest {
 		user.setEmailId("aishu@gmail.com");
 		//user.setActive(true);
 		user.setPassword("aish");
-		uDAO.save(user);
+		//uDAO.save(user);
 		//uDAO.updateAsInactive(user);
 		//uDAO.listById(1);
 	}

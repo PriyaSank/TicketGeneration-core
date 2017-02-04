@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.EmployeeModel;
+import com.ticket.model.IssueModel;
 import com.ticket.model.PriorityModel;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
@@ -16,8 +17,20 @@ import com.ticket.util.ConnectionUtil;
 public class TicketDetailsDAO  {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
-
-	
+	public Boolean checkEmployeeTicket(int empId,int ticId){
+		final String sql="select 1 from tbl_ticket_details where employee_id=? and id=?";
+		final Object[] params={empId,ticId};
+		
+		return jdbcTemplate.queryForObject(sql,params,Boolean.class);
+		
+	}
+	public void updateTicketStatus(TicketDetailsModel tic){
+		final String sql="update tbl_ticket_details set status=? where id=?";
+		final Object[] params={tic.getStatus(),tic.getId()};
+		
+		jdbcTemplate.update(sql,params);
+		
+	}
 	public List<TicketDetailsModel> listAll() {
 
 		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details";
@@ -28,6 +41,13 @@ public class TicketDetailsDAO  {
 
 		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where user_id=?";
 		final Object[] params={userId};
+		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
+		
+	}
+	public List<TicketDetailsModel> listByEmployeeId(int empId) {
+
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where employee_id=?";
+		final Object[] params={empId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
 		
 	}

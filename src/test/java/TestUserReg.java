@@ -1,11 +1,14 @@
+import org.springframework.dao.DataAccessException;
+
 import com.ticket.dao.TicketGenerationDAO;
 import com.ticket.dao.UserModule;
+import com.ticket.exception.PersistenceException;
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
 
 public class TestUserReg {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DataAccessException, PersistenceException {
 		
 	
 TicketGenerationDAO ticGen=new TicketGenerationDAO();

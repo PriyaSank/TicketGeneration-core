@@ -34,7 +34,7 @@ public void register(UserModel user) throws ServiceException {
 public void logIn(String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
-	System.out.println(uLog.logIn(emailId, pwd));	
+	uLog.logIn(emailId, pwd);	
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
@@ -46,7 +46,7 @@ public void logIn(String emailId, String pwd) throws ServiceException{
 public void ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
-	System.out.println(uLog.logIn(emailId, pwd));
+	uLog.logIn(emailId, pwd);
 	ticGen.ticketGenerate(tic);
 	}
 	catch(ValidationException e){
@@ -56,4 +56,5 @@ public void ticketGeneration(TicketDetailsModel tic,String emailId, String pwd) 
 		throw new ServiceException ("Try a diff email id",e);	
 		}
 }
+
 }
