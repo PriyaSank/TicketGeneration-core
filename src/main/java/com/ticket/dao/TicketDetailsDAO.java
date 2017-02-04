@@ -31,6 +31,21 @@ public class TicketDetailsDAO  {
 		jdbcTemplate.update(sql,params);
 		
 	}
+	public void deleteTicket(int id){
+		
+		final String sql="delete from tbl_ticket_details where id=?";
+		final Object[] params={id};
+		
+		jdbcTemplate.update(sql,params);
+		
+	}
+	public int getDeptId(int id) {
+		final String sql="select department_id from tbl_ticket_details and id=?";
+		final Object[] params={id};
+		
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
+		
+	}
 	public List<TicketDetailsModel> listAll() {
 
 		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details";

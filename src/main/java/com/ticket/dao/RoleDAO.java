@@ -41,6 +41,13 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		final String sql = "select id,name,active from tbl_roles";
 		return jdbcTemplate.query(sql, (rs, rownum) -> convert(rs));
 	}
+	public int getRoleId(String name) {
+		final String sql="select id from tbl_ticket_details and name=?";
+		final Object[] params={name};
+		
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
+		
+	}
 
 	private RoleModel convert(ResultSet rs) throws SQLException {
 		RoleModel role=new RoleModel();

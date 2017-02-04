@@ -43,16 +43,15 @@ public class EmployeeService {
 			throw new ServiceException("Enter proper inputs", e);
 		}
 	}
-
-	public void assignTicket(String emailId, String pwd, int ticId) throws ServiceException {
+	public void deleteTicket(String emailId, String pwd, int ticId) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
 			if (eTask.logIn(emailId, pwd))
 
 			{
-
 				eVal.validateAssignTicket(ticId);
-				eTask.assignTicket(emailId,ticId);
+				eTask.deleteTicket(emailId, ticId);
+				
 			}
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
@@ -61,7 +60,40 @@ public class EmployeeService {
 			throw new ServiceException("Try a diff email id", e);
 		}
 	}
+	public void assignTicket(String emailId, String pwd,int toEmpId, int ticId) throws ServiceException {
+		try {
+			eVal.validateLogin(emailId, pwd);
+			if (eTask.logIn(emailId, pwd))
 
+			{
+
+				eVal.validateAssignTicket(ticId);
+				eTask.assignTicket(emailId,toEmpId,ticId);
+			}
+		} catch (ValidationException e) {
+			throw new ServiceException("Enter proper inputs", e);
+		} catch (PersistenceException e) {
+
+			throw new ServiceException("Try a diff email id", e);
+		}
+	}
+	public void reassignTicket(String emailId, String pwd,int toEmpId, int ticId) throws ServiceException {
+		try {
+			eVal.validateLogin(emailId, pwd);
+			if (eTask.logIn(emailId, pwd))
+
+			{
+
+				eVal.validateAssignTicket(ticId);
+				eTask.reassignTicket(emailId,toEmpId,ticId);
+			}
+		} catch (ValidationException e) {
+			throw new ServiceException("Enter proper inputs", e);
+		} catch (PersistenceException e) {
+
+			throw new ServiceException("Try a diff email id", e);
+		}
+	}
 	public List<TicketDetailsModel> viewAssignedTicket(String emailId, String pwd) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
