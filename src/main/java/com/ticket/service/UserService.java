@@ -1,5 +1,7 @@
 package com.ticket.service;
 
+import java.util.List;
+
 import com.ticket.dao.TicketDetailsDAO;
 import com.ticket.dao.TicketGenerationDAO;
 import com.ticket.dao.UserDAO;
@@ -23,6 +25,7 @@ public class UserService {
 	TicketGenerationDAO ticGen=new TicketGenerationDAO();
 	TicketDetailsDAO ticDAO=new TicketDetailsDAO();
 	UserModule userMod=new UserModule();
+	int userId;
 public String register(UserModel user) throws ServiceException {
 	
 	try{
@@ -60,7 +63,8 @@ public String ticketGeneration(TicketDetailsModel tic,String emailId, String pwd
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd))
 	{
-	ticGen.ticketGenerate(tic);
+	userId=userDAO.getUserId(emailId);
+	ticGen.ticketGenerate(tic,userId);
 	return "Ticket Generation is successful";
 	}
 	return "Ticket Generation is unsuccessful";
@@ -78,7 +82,7 @@ public String updateTicketStatus(String emailId, String pwd,int ticketId,String 
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd)){
 		userval.validateId(ticketId);	
-	return userMod.updateTicket(emailId, pwd, ticketId, ticketStatus);
+	return userMod.updateTicket(emailId,ticketId, ticketStatus);
 	}
 	return "Login unsuccessful";
 	}
@@ -94,7 +98,7 @@ public String closeTicket(String emailId, String pwd,int ticketId) throws Servic
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd)){
 	userval.validateId(ticketId);	
-	return userMod.closeTicket(emailId, pwd, ticketId);
+	return userMod.closeTicket(emailId, ticketId);
 	}
 	return "Login unsuccessful";
 	}
@@ -105,14 +109,14 @@ public String closeTicket(String emailId, String pwd,int ticketId) throws Servic
 		throw new ServiceException ("Try a diff email id",e);	
 		}
 }
-public String viewTicket(String emailId, String pwd) throws ServiceException{
+public List<TicketDetailsModel> viewTicket(String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
 	if(uLog.logIn(emailId, pwd)){
-	int userId=userDAO.getUserId(emailId);
-	ticDAO.listByUserId(userId);
+	userId=userDAO.getUserId(emailId);
+	return ticDAO.listByUserId(userId);
 	}
-	return "Login unsuccessful";
+	return null;
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	

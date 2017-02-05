@@ -23,22 +23,28 @@ public class EmployeeService {
 	EmployeeValidation empVal = new EmployeeValidation();
 	
 	IssueValidation issVal=new IssueValidation();
-	public void logIn(String emailId, String pwd) throws ServiceException {
+	public String logIn(String emailId, String pwd) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
-			System.out.println(eTask.logIn(emailId, pwd));
-
-		} catch (ValidationException e) {
+			if(eTask.logIn(emailId, pwd))
+			{
+			return "Login successful";
+			}
+			return "Login unsuccessful";
+		}
+		
+		catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Try a diff email id", e);
 		}
 	}
 
-	public void registerEmployee(EmployeeModel emp) throws ServiceException {
+	public String registerEmployee(EmployeeModel emp) throws ServiceException {
 		try {
 			empVal.validateSave(emp);
 			eDAO.save(emp);
+			return "Registration successful";
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		}

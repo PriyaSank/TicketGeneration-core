@@ -14,6 +14,8 @@ import com.ticket.util.ConnectionUtil;
 public class EmployeeTasks {
 	int empId;
 	int ticId;
+	int roleId;
+	int deptId;
 	EmployeeModel emp1=new EmployeeModel();
 	EmployeeModel emp2=new EmployeeModel();
 	TicketDetailsModel tic=new TicketDetailsModel();
@@ -35,8 +37,12 @@ public class EmployeeTasks {
 				}
 				return false;
 	}
-	public void assignTicket(String emailId,int toEmpId,int ticId) throws PersistenceException{
+	public String assignTicket(String emailId,int toEmpId,int ticId) throws PersistenceException{
 		empId=eDAO.getId(emailId);
+		roleId=eDAO.getRoleId(emailId);
+		deptId=eDAO.getDepartmentId(emailId);
+		if((ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(toEmpId))&&(deptId==ticDAO.getDeptId(ticId))&&(roleId==roleDAO.getRoleId("Admin")))
+		{
 		final String sql="update tbl_ticket_details set employee_id=? where id=?";
 		final Object[] params={toEmpId,ticId};
 		jdbcTemplate.update(sql,params);
@@ -48,8 +54,11 @@ public class EmployeeTasks {
 		ticAss.setTic(tic);
 		
 		ticAssDAO.save(ticAss);
+		return "Ticket assigned successfully";
+		}
+		return "Unsuccessful Assignment";
 	}
-	public void reassignTicket(String emailId,int emp2Id,int ticId) throws PersistenceException{
+	public String reassignTicket(String emailId,int emp2Id,int ticId) throws PersistenceException{
 		empId=eDAO.getId(emailId);
 		if(ticDAO.checkEmployeeTicket(empId, ticId)){
 			
@@ -65,12 +74,13 @@ public class EmployeeTasks {
 		ticAss.setTic(tic);
 		
 		ticAssDAO.save(ticAss);
+		return "Ticket reassigned successfully";
 		}
-		
+		return "Unsuccessful Assignment";
 	}
 	public void deleteTicket(String emailId,int ticId) throws PersistenceException{
-		int roleId=eDAO.getRoleId(emailId);
-		int deptId=eDAO.getDepartmentId(emailId);
+		roleId=eDAO.getRoleId(emailId);
+		deptId=eDAO.getDepartmentId(emailId);
 		if((deptId==ticDAO.getDeptId(ticId))&&(roleId==roleDAO.getRoleId("Admin")))
 		{
 	

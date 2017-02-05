@@ -6,9 +6,10 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.ticket.exception.PersistenceException;
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.EmployeeModel;
-import com.ticket.model.IssueModel;
+
 import com.ticket.model.PriorityModel;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
@@ -52,14 +53,14 @@ public class TicketDetailsDAO  {
 		return jdbcTemplate.query(sql, (rs, rownum) -> convert(rs));
 		
 	}
-	public List<TicketDetailsModel> listByUserId(int userId) {
+	public List<TicketDetailsModel> listByUserId(int userId) throws PersistenceException{
 
 		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where user_id=?";
 		final Object[] params={userId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
 		
 	}
-	public List<TicketDetailsModel> listByEmployeeId(int empId) {
+	public List<TicketDetailsModel> listByEmployeeId(int empId) throws PersistenceException {
 
 		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where employee_id=?";
 		final Object[] params={empId};

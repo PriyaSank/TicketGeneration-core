@@ -11,7 +11,7 @@ public class UserModule {
 	UserDAO uDAO=new UserDAO();
 	TicketDetailsDAO tic=new TicketDetailsDAO();
 	UserLoginDAO log=new UserLoginDAO();
- public String closeTicket(String emailId,String pwd,Integer ticketId) throws DataAccessException, PersistenceException{
+ public String closeTicket(String emailId,Integer ticketId) throws DataAccessException, PersistenceException{
 
 
 	
@@ -32,7 +32,7 @@ public class UserModule {
 			}
 	
 }
-public String updateTicket(String emailId,String pwd,Integer ticketId,String ticketStatus) throws DataAccessException, PersistenceException{
+public String updateTicket(String emailId,Integer ticketId,String ticketStatus) throws DataAccessException, PersistenceException{
 	
 
 	

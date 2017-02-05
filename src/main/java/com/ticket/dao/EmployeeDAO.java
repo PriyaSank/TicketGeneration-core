@@ -22,6 +22,7 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		final Object[] params = { emp.getName(), emp.getRole().getId(), emp.getEmailId(), emp.getPassword(),
 				emp.getDept().getId() };
 		jdbcTemplate.update(sql, params);
+		
 	}
 	public String getPassword(String emailId) throws PersistenceException
 	{
@@ -83,6 +84,21 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		}
 		
 	}
+	public Integer getDepartmentIdByEmpId(int empId) throws PersistenceException
+	{
+		try{
+			
+		
+		final String sql="select department_id from tbl_employees where id=?";
+		final Object[] params={empId};
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
+		}
+		catch(EmptyResultDataAccessException e)
+		{
+			throw new PersistenceException("Invalid EmpId",e);
+		}
+		
+	}
 	@Override
 	public void update(EmployeeModel emp) {
 		final String sql = "update tbl_employees set password=? where email_id=?";
@@ -133,5 +149,6 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		final Object[] params = { id };
 		return jdbcTemplate.queryForObject(sql, params, (rs, rownum) -> covert(rs));
 	}
+	
 
 }

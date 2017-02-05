@@ -19,16 +19,17 @@ public static void main(String[] args) throws ServiceException {
 //	iss.setTic(tic);
 	//iss.setSolution("Go to eclipse marketplace and download");
 	//ser.replyToTicket("janani@gmail.com", "jana", iss);
-	ser.reassignTicket("janani@gmail.com", "jana", 1, 1);
+	//ser.reassignTicket("janani@gmail.com", "jana", 1, 1);
 	//System.out.println(ser.viewAssignedTicket("janani@gmail.com", "jana"));
 	//ser.assignTicket("janani@gmail.com", "jana", 1);
 //	role.setId(2);
-//	emp.setEmailId("janani@gmail.com");
-//	emp.setPassword("jana");
+//	emp.setEmailId("priyan@gmail.com");
+//	emp.setPassword("priyan");
 //	dep.setId(2);
 //	emp.setDept(dep);
-//	emp.setName("Janani");
+//	emp.setName("Priyan");
 //	emp.setRole(role);
 //	ser.registerEmployee(emp);
+//	System.out.println(ser.registerEmployee(emp));
 }
 }
