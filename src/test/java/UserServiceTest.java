@@ -10,7 +10,7 @@ import com.ticket.model.TicketDetailsModel;
 import com.ticket.model.UserModel;
 import com.ticket.service.UserService;
 
-public class TestUserReg {
+public class UserServiceTest {
 	public static void main(String[] args) throws ServiceException {
 		
 	
