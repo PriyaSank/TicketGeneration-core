@@ -19,7 +19,7 @@ public class TicketDetailsDAO  {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
 	public Boolean checkEmployeeTicket(int empId,int ticId){
-		final String sql="select 1 from tbl_ticket_details where employee_id=? and id=?";
+		final String sql="select 1 from tbl_ticket_details where employee_id=? where id=?";
 		final Object[] params={empId,ticId};
 		
 		return jdbcTemplate.queryForObject(sql,params,Boolean.class);
@@ -41,7 +41,7 @@ public class TicketDetailsDAO  {
 		
 	}
 	public int getDeptId(int id) {
-		final String sql="select department_id from tbl_ticket_details and id=?";
+		final String sql="select department_id from tbl_ticket_details where id=?";
 		final Object[] params={id};
 		
 		return jdbcTemplate.queryForObject(sql,params,Integer.class);

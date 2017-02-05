@@ -42,7 +42,7 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		return jdbcTemplate.query(sql, (rs, rownum) -> convert(rs));
 	}
 	public int getRoleId(String name) {
-		final String sql="select id from tbl_ticket_details and name=?";
+		final String sql="select id from tbl_ticket_details where name=?";
 		final Object[] params={name};
 		
 		return jdbcTemplate.queryForObject(sql,params,Integer.class);

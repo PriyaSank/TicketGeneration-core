@@ -60,7 +60,7 @@ public class EmployeeTasks {
 	}
 	public String reassignTicket(String emailId,int emp2Id,int ticId) throws PersistenceException{
 		empId=eDAO.getId(emailId);
-		if(ticDAO.checkEmployeeTicket(empId, ticId)){
+		if((ticDAO.checkEmployeeTicket(empId, ticId))&&(ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(emp2Id))){
 			
 		final String sql="update tbl_ticket_details set employee_id=? where id=?";
 		final Object[] params={emp2Id,ticId};
