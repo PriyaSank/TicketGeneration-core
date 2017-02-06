@@ -41,15 +41,15 @@ public String register(UserModel user) throws ServiceException {
 		}
 }
 
-public String logIn(String emailId, String pwd) throws ServiceException{
+public Boolean logIn(String emailId, String pwd) throws ServiceException{
 	try{
 	logval.validateLogin(emailId, pwd);
 	
 	if(uLog.logIn(emailId, pwd))
 	{
-		return "Login is successful";
+		return true;
 	}
-	return "Login unsuccessful";
+	return false;
 	}
 	catch(ValidationException e){
 	throw new ServiceException ("Enter proper inputs",e);	
