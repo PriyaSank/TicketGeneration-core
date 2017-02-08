@@ -53,11 +53,25 @@ public class TicketDetailsDAO  {
 		return jdbcTemplate.query(sql, (rs, rownum) -> convert(rs));
 		
 	}
+	public List<Integer> listAllTicketId(int userId) {
+
+		final String sql = "select id from tbl_ticket_details where user_id=?";
+		final Object[] params={userId};
+		return jdbcTemplate.queryForList(sql,params,Integer.class);
+		
+	}
 	public List<TicketDetailsModel> listByUserId(int userId) throws PersistenceException{
 
-		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where user_id=?";
+		final String sql = "select id,department_id,subject,description,priority_id,status from tbl_ticket_details where user_id=?";
 		final Object[] params={userId};
-		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
+		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert1(rs));
+		
+	}
+	public TicketDetailsModel listById(int id) throws PersistenceException{
+
+		final String sql = "select user_id,department_id,subject,description,priority_id from tbl_ticket_details where id=?";
+		final Object[] params={id};
+		return jdbcTemplate.queryForObject(sql,params, (rs, rownum) -> convert(rs));
 		
 	}
 	public List<TicketDetailsModel> listByEmployeeId(int empId) throws PersistenceException {
@@ -101,6 +115,21 @@ public TicketDetailsModel getStatus(int ticId){
 		tic.setStatus(rs.getString("status"));
 	return tic;	
 	}
-
+	private TicketDetailsModel convert1(ResultSet rs) throws SQLException {
+		TicketDetailsModel tic=new TicketDetailsModel();
+		UserModel user=new UserModel();
+		DepartmentModel dep=new DepartmentModel();
+		PriorityModel pri=new PriorityModel();
+		tic.setId(rs.getInt("id"));
+		
+		dep.setId(rs.getInt("department_id"));
+		tic.setDept(dep);
+		tic.setSubject(rs.getString("subject"));
+		tic.setDescription(rs.getString("description"));
+		pri.setId(rs.getInt("priority_id"));
+		tic.setPrior(pri);
+		tic.setStatus(rs.getString("status"));
+	return tic;	
+	}
 
 }

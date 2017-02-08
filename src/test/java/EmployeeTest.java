@@ -1,12 +1,11 @@
-import java.util.List;
-
 import com.ticket.dao.EmployeeDAO;
+import com.ticket.exception.PersistenceException;
 import com.ticket.model.DepartmentModel;
 import com.ticket.model.EmployeeModel;
 import com.ticket.model.RoleModel;
 
 public class EmployeeTest {
-public static void main(String[] args) {
+public static void main(String[] args) throws PersistenceException {
 	EmployeeModel emp=new EmployeeModel();
 	EmployeeDAO empDAO=new EmployeeDAO();
 	DepartmentModel dep=new DepartmentModel();
@@ -21,7 +20,7 @@ public static void main(String[] args) {
 //	role.setId(2);
 //	
 //	empDAO.save(emp);
-	
+//	System.out.println(empDAO.tic);
 //	emp.setPassword("naresh");
 //	emp.setActive(true);
 //	emp.setEmailId("nareshkumar@gmail.com");
@@ -33,8 +32,8 @@ public static void main(String[] args) {
 //	 {
 //	 System.out.println(s);
 //	}
-	emp= empDAO.listById(1);
-	System.out.println(emp.getEmailId());
+//	emp= empDAO.listById(1);
+//	System.out.println(emp.getEmailId());
 	
 }
 }

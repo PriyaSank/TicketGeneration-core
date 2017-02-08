@@ -34,7 +34,12 @@ public class DepartmentDAO implements InterfaceDAO<DepartmentModel>{
 		jdbcTemplate.update(sql, params);
 		
 	}
-
+	public Integer getDeptId(String depName)
+	{
+		final String sql="select id from tbl_departments where name=?";
+		final Object[] params={depName};
+		return jdbcTemplate.queryForObject(sql,params,Integer.class);
+	}
 	@Override
 	public List<DepartmentModel> listAll() {
 

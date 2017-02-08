@@ -84,6 +84,22 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		}
 		
 	}
+	public String getEmailId(int deptId) throws PersistenceException
+	{
+		try{
+			
+		
+		final String sql="select email_id from tbl_employees where department_id=? and role_id=1";
+		final Object[] params={deptId};
+		return jdbcTemplate.queryForObject(sql,params,String.class);
+		}
+		catch(EmptyResultDataAccessException e)
+
+		{
+			throw new PersistenceException("Invalid DeptId",e);
+		}
+		
+	}
 	public Integer getDepartmentIdByEmpId(int empId) throws PersistenceException
 	{
 		try{

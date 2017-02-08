@@ -23,20 +23,20 @@ public class EmployeeService {
 	EmployeeValidation empVal = new EmployeeValidation();
 	
 	IssueValidation issVal=new IssueValidation();
-	public String logIn(String emailId, String pwd) throws ServiceException {
+	public boolean logIn(String emailId, String pwd) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
 			if(eTask.logIn(emailId, pwd))
 			{
-			return "Login successful";
+			return true;
 			}
-			return "Login unsuccessful";
+			return false;
 		}
 		
 		catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
-			throw new ServiceException("Try a diff email id", e);
+			throw new ServiceException("email id is not registered", e);
 		}
 	}
 
