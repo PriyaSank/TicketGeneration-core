@@ -116,17 +116,14 @@ public class UserService {
 		}
 	}
 
-	public Boolean closeTicket(int ticketId) throws ServiceException, PersistenceException {
-		try {
+	public Boolean closeTicket(TicketDetailsModel tick) throws ServiceException, PersistenceException {
+		
 			
-				userval.validateId(ticketId);
-				userMod.closeTicket(ticketId);
+			
+				userMod.closeTicket(tick);
 				return true;
 			
-		} catch (ValidationException e) {
-			throw new ServiceException("Enter proper inputs", e);
 		
-	}
 	}
 
 	public List<TicketDetailsModel> viewTicket(String emailId) throws ServiceException {

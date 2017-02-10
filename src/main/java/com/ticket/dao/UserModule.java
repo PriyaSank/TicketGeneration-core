@@ -32,12 +32,12 @@ public class UserModule {
 //	}
 	
 		
- public boolean closeTicket(Integer ticketId) throws PersistenceException{
+ public boolean closeTicket(TicketDetailsModel tick) throws PersistenceException{
 
 
 	
-		
-		if("CLOSED".equals(tic.getStatus(ticketId).getStatus())){
+		int ticId=tick.getId();
+		if("CLOSED".equals(tic.getStatus(ticId))){
 			
 			return false;
 		}
@@ -47,7 +47,7 @@ public class UserModule {
 
 		
 		final String sql2="update tbl_ticket_details set status=? where id=?";
-		final Object[] params2={"CLOSED",ticketId};
+		final Object[] params2={"CLOSED",ticId};
 		jdbcTemplate.update(sql2,params2);
 		return true;
 			}
