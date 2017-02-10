@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ticket.dao.EmployeeDAO;
 import com.ticket.dao.EmployeeTasks;
-
 import com.ticket.exception.PersistenceException;
 import com.ticket.exception.ServiceException;
 import com.ticket.exception.ValidationException;
@@ -17,12 +16,14 @@ import com.ticket.validation.EmployeeValidation;
 import com.ticket.validation.IssueValidation;
 
 public class EmployeeService {
+	
 	EmployeeTasks eTask = new EmployeeTasks();
 	EmployeeTasksValidation eVal = new EmployeeTasksValidation();
 	EmployeeDAO eDAO = new EmployeeDAO();
 	EmployeeValidation empVal = new EmployeeValidation();
-	
+	EmployeeModel emp=new EmployeeModel();
 	IssueValidation issVal=new IssueValidation();
+	TicketDetailsModel tic=new TicketDetailsModel();
 	public boolean logIn(String emailId, String pwd) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
@@ -103,17 +104,14 @@ public class EmployeeService {
 			throw new ServiceException("Try a diff email id", e);
 		}
 	}
-	public List<TicketDetailsModel> viewAssignedTicket(String emailId, String pwd) throws ServiceException {
+	public List<TicketDetailsModel> viewAssignedTicket(String emailId) throws ServiceException {
 		try {
-			eVal.validateLogin(emailId, pwd);
-			if (eTask.logIn(emailId, pwd))
-
-			{
+			
 				Integer empId = eDAO.getId(emailId);
 				ValidationUtil.isInvalidNumber(empId, "EmailId");
 				return eTask.viewAssignedTicket(empId);
-			}
-			return null;
+			
+			
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
@@ -121,19 +119,17 @@ public class EmployeeService {
 			throw new ServiceException("Try a diff email id", e);
 		}
 	}
-	public void replyToTicket(String emailId, String pwd,IssueModel issue) throws ServiceException {
+	public void replyToTicket(int ticketId,int empId,String solution) throws ServiceException {
 		try {
-			eVal.validateLogin(emailId, pwd);
-			if (eTask.logIn(emailId, pwd))
-
-			{
+			IssueModel issue=new IssueModel();
+			issue.setEmp(emp);
+			emp.setId(empId);
+			issue.setSolution(solution);
+			issue.setTic(tic);
+			tic.setId(ticketId);
 				issVal.validateSave(issue);
-				eTask.replyTicket(emailId, issue);
-				
-				
-				}
-			
-			
+				eTask.replyTicket(issue);
+		
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {

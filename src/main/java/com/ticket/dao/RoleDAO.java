@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.ticket.model.RoleModel;
 import com.ticket.util.ConnectionUtil;
 
-public class RoleDAO implements InterfaceDAO<RoleModel> {
+public class RoleDAO{
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
-	@Override
+
 	public void save(RoleModel role) {
 		final String sql = "insert into tbl_roles(name) values (?)";
 		final Object[] params = { role.getName() };
@@ -19,7 +19,7 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		
 	}
 
-	@Override
+
 	public void update(RoleModel role) {
 		final String sql = "update tbl_roles set name=? where id=?";
 		final Object[] params = { role.getName(),role.getId() };
@@ -27,7 +27,7 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		
 	}
 
-	@Override
+	
 	public void updateAsInactive(RoleModel role) {
 		final String sql = "update tbl_roles set active=? where id=?";
 		final Object[] params = { role.getActive(),role.getId() };
@@ -35,7 +35,7 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		
 	}
 
-	@Override
+
 	public List<RoleModel> listAll() {
 
 		final String sql = "select id,name,active from tbl_roles";
@@ -57,7 +57,7 @@ public class RoleDAO implements InterfaceDAO<RoleModel> {
 		return role;
 	}
 
-	@Override
+	
 	public RoleModel listById(int id) {
 
 		final String sql = "select id,name,active from tbl_roles where id=?";

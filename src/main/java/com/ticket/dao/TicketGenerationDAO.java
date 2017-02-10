@@ -11,7 +11,7 @@ import com.ticket.util.ConnectionUtil;
 import com.ticket.util.MailUtil;
 
 public class TicketGenerationDAO {
-	UserDAO userDAO=new UserDAO();
+	UserDAO userDAO=new UserDAOImpl();
 	EmployeeDAO emp=new EmployeeDAO();
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 	public String ticketGenerate(TicketDetailsModel tic,int userId){

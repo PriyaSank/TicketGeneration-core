@@ -93,10 +93,9 @@ public class EmployeeTasks {
 		
 		return ticDAO.listByEmployeeId(empId);
 	}
-public void replyTicket(String emailId,IssueModel issue) throws PersistenceException{
-		empId=eDAO.getId(emailId);
-		ticId=issue.getTic().getId();
-		if(ticDAO.checkEmployeeTicket(empId, ticId)){
+public void replyTicket(IssueModel issue) throws PersistenceException{
+	
+		if(ticDAO.checkEmployeeTicket(issue.getEmp().getId(), ticId)){
 			iss.save(issue);
 			tic.setStatus("RESOLVED");
 			tic.setId(issue.getTic().getId());

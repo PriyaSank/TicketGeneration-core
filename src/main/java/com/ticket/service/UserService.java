@@ -7,6 +7,7 @@ import com.ticket.dao.PriorityDAO;
 import com.ticket.dao.TicketDetailsDAO;
 import com.ticket.dao.TicketGenerationDAO;
 import com.ticket.dao.UserDAO;
+import com.ticket.dao.UserDAOImpl;
 import com.ticket.dao.UserLoginDAO;
 import com.ticket.dao.UserModule;
 import com.ticket.exception.PersistenceException;
@@ -22,7 +23,7 @@ import com.ticket.validation.UserValidation;
 
 public class UserService {
 	TicketValidation ticVal = new TicketValidation();
-	UserDAO userDAO = new UserDAO();
+	UserDAO userDAO = new UserDAOImpl();
 	UserModel user = new UserModel();
 	PriorityDAO priorDAO = new PriorityDAO();
 	DepartmentDAO depDAO = new DepartmentDAO();
@@ -100,15 +101,14 @@ public class UserService {
 
 	}
 
-	public String updateTicketStatus(String emailId, String pwd, int ticketId, String ticketStatus)
+	public Boolean reopenTicket(int ticketId)
 			throws ServiceException {
 		try {
-			logval.validateLogin(emailId, pwd);
-			if (uLog.logIn(emailId, pwd)) {
+			
 				userval.validateId(ticketId);
-				return userMod.updateTicket(emailId, ticketId, ticketStatus);
-			}
-			return "Login unsuccessful";
+				userMod.reopenTicket(ticketId);
+			
+			return true;
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
@@ -116,19 +116,17 @@ public class UserService {
 		}
 	}
 
-	public String closeTicket(String emailId, String pwd, int ticketId) throws ServiceException {
+	public Boolean closeTicket(int ticketId) throws ServiceException, PersistenceException {
 		try {
-			logval.validateLogin(emailId, pwd);
-			if (uLog.logIn(emailId, pwd)) {
+			
 				userval.validateId(ticketId);
-				return userMod.closeTicket(emailId, ticketId);
-			}
-			return "Login unsuccessful";
+				userMod.closeTicket(ticketId);
+				return true;
+			
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
-		} catch (PersistenceException e) {
-			throw new ServiceException("Try a diff email id", e);
-		}
+		
+	}
 	}
 
 	public List<TicketDetailsModel> viewTicket(String emailId) throws ServiceException {
@@ -136,7 +134,7 @@ public class UserService {
 
 		 userId=userDAO.getUserId(emailId);
 	
-			return ticDAO.listByEmployeeId(userId);
+			return ticDAO.listByUserId(userId);
 		}
 
 		catch (PersistenceException e) {

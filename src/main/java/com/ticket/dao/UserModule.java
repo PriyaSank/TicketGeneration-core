@@ -12,7 +12,7 @@ import com.ticket.util.ConnectionUtil;
 
 public class UserModule {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
-	UserDAO uDAO=new UserDAO();
+	UserDAO uDAO=new UserDAOImpl();
 	IssueModel iss=new IssueModel();
 	TicketDetailsModel ticMod=new TicketDetailsModel();
 	TicketDetailsDAO tic=new TicketDetailsDAO();
@@ -32,42 +32,42 @@ public class UserModule {
 //	}
 	
 		
- public String closeTicket(String emailId,Integer ticketId) throws DataAccessException, PersistenceException{
+ public boolean closeTicket(Integer ticketId) throws PersistenceException{
 
 
 	
 		
 		if("CLOSED".equals(tic.getStatus(ticketId).getStatus())){
 			
-			return "Status is already closed";
+			return false;
 		}
 			else
 			{
 		
-	Integer id=uDAO.getUserId(emailId);
+
 		
-		final String sql2="update tbl_ticket_details set status=? where id=? and user_id=?";
-		final Object[] params2={"CLOSED",ticketId,id};
+		final String sql2="update tbl_ticket_details set status=? where id=?";
+		final Object[] params2={"CLOSED",ticketId};
 		jdbcTemplate.update(sql2,params2);
-		return "Ticket Closed";
+		return true;
 			}
 	
 }
-public String updateTicket(String emailId,Integer ticketId,String ticketStatus) throws DataAccessException, PersistenceException{
+public boolean reopenTicket(Integer ticketId) throws PersistenceException{
 	
 
 	
 		if("CLOSED".equals(tic.getStatus(ticketId).getStatus())){
-		return "Ticket is already closed";
+		return false;
 	}
 		else
 		{
-			Integer id=uDAO.getUserId(emailId);
 			
-			final String sql="update tbl_ticket_details set status=? where id=? and user_id=?";
-			final Object[] params={ticketStatus,ticketId,id};
+			
+			final String sql="update tbl_ticket_details set status=? where id=?";
+			final Object[] params={"REOPEN",ticketId};
 			jdbcTemplate.update(sql,params);
-			return "Ticket status updated";
+			return true;
 		}
 	}
 	

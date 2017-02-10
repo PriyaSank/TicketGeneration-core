@@ -9,7 +9,7 @@ public class IssueValidation {
 	public void validateSave(IssueModel issue) throws ValidationException {
 		ValidationUtil.isInvalidString(issue.getSolution(),"Solution");
 		ValidationUtil.isInvalidNumber(issue.getTic().getId(), "TicketId");
-
+		ValidationUtil.isInvalidNumber(issue.getEmp().getId(), "EmpId");
 	}
 
 }

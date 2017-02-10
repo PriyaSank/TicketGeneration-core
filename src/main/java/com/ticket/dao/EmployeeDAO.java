@@ -13,10 +13,10 @@ import com.ticket.model.EmployeeModel;
 import com.ticket.model.RoleModel;
 import com.ticket.util.ConnectionUtil;
 
-public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
+public class EmployeeDAO{
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
-	@Override
+	
 	public void save(EmployeeModel emp) {
 		final String sql = "insert into tbl_employees(name,role_id,email_id,password,department_id) values (?,?,?,?,?)";
 		final Object[] params = { emp.getName(), emp.getRole().getId(), emp.getEmailId(), emp.getPassword(),
@@ -115,7 +115,7 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		}
 		
 	}
-	@Override
+
 	public void update(EmployeeModel emp) {
 		final String sql = "update tbl_employees set password=? where email_id=?";
 		final Object[] params = { emp.getPassword(), emp.getEmailId() };
@@ -123,7 +123,7 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 
 	}
 
-	@Override
+	
 	public void updateAsInactive(EmployeeModel emp) {
 
 		final String sql = "update tbl_employees set active=? where email_id=?";
@@ -131,7 +131,7 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 		jdbcTemplate.update(sql, params);
 	}
 
-	@Override
+	
 	public List<EmployeeModel> listAll() {
 
 		final String sql = "select id,role_id,department_id,name,email_id,password,active from tbl_employees";
@@ -158,7 +158,7 @@ public class EmployeeDAO implements InterfaceDAO<EmployeeModel> {
 
 	}
 
-	@Override
+
 	public EmployeeModel listById(int id) {
 
 		final String sql = "select id,role_id,department_id,name,email_id,password,active from tbl_employees where id=?";

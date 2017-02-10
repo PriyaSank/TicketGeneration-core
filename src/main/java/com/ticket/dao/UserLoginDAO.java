@@ -9,7 +9,7 @@ public class UserLoginDAO {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 	public Boolean logIn(String emailId,String pwd ) throws PersistenceException
 	{
-		UserDAO uDAO=new UserDAO();
+		UserDAO uDAO=new UserDAOImpl();
 		
 		String check=uDAO.getPassword(emailId);
 				if(check.equals(pwd))
