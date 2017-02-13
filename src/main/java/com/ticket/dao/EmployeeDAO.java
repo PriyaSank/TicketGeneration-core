@@ -165,6 +165,11 @@ public class EmployeeDAO{
 		final Object[] params = { id };
 		return jdbcTemplate.queryForObject(sql, params, (rs, rownum) -> covert(rs));
 	}
-	
+	public List<EmployeeModel> listByRoleId(int roleId) {
+
+		final String sql = "select id,role_id,department_id,name,email_id,password,active from tbl_employees where role_id=?";
+		final Object[] params = { roleId };
+		return (List<EmployeeModel>) jdbcTemplate.queryForObject(sql, params, (rs, rownum) -> covert(rs));
+	}
 
 }

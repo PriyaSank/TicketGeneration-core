@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ticket.dao.EmployeeDAO;
 import com.ticket.dao.EmployeeTasks;
+import com.ticket.dao.TicketDetailsDAO;
 import com.ticket.exception.PersistenceException;
 import com.ticket.exception.ServiceException;
 import com.ticket.exception.ValidationException;
@@ -21,9 +22,10 @@ public class EmployeeService {
 	EmployeeTasksValidation eVal = new EmployeeTasksValidation();
 	EmployeeDAO eDAO = new EmployeeDAO();
 	EmployeeValidation empVal = new EmployeeValidation();
-	EmployeeModel emp=new EmployeeModel();
+	
 	IssueValidation issVal=new IssueValidation();
 	TicketDetailsModel tic=new TicketDetailsModel();
+	TicketDetailsDAO ticDAO=new TicketDetailsDAO();
 	public boolean logIn(String emailId, String pwd) throws ServiceException {
 		try {
 			eVal.validateLogin(emailId, pwd);
@@ -50,53 +52,37 @@ public class EmployeeService {
 			throw new ServiceException("Enter proper inputs", e);
 		}
 	}
-	public void deleteTicket(String emailId, String pwd, int ticId) throws ServiceException {
+	public void deleteTicket(int ticId) throws ServiceException {
 		try {
-			eVal.validateLogin(emailId, pwd);
-			if (eTask.logIn(emailId, pwd))
-
-			{
+		
 				eVal.validateAssignTicket(ticId);
-				eTask.deleteTicket(emailId, ticId);
+				   ticDAO.deleteTicket(ticId);
 				
-			}
+			
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
-		} catch (PersistenceException e) {
-
-			throw new ServiceException("Try a diff email id", e);
 		}
 	}
-	public String assignTicket(String emailId, String pwd,int toEmpId, int ticId) throws ServiceException {
+	public Boolean assignTicket(String emailId,int toEmpId, int ticId) throws ServiceException {
 		try {
-			eVal.validateLogin(emailId, pwd);
-			if (eTask.logIn(emailId, pwd))
-
+			int emp1=eDAO.getId(emailId);
+			if(eTask.assignTicket(emailId,emp1,toEmpId,ticId))
 			{
-
-				eVal.validateAssignTicket(ticId);
-				return eTask.assignTicket(emailId,toEmpId,ticId);
+				return true;
 			}
-			return null;
-		} catch (ValidationException e) {
-			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
-
-			throw new ServiceException("Try a diff email id", e);
+		
 		}
+		return false;
 	}
-	public String reassignTicket(String emailId, String pwd,int toEmpId, int ticId) throws ServiceException {
+	public Boolean reassignTicket(int empl,int toEmpId, int ticId) throws ServiceException {
 		try {
-			eVal.validateLogin(emailId, pwd);
-			if (eTask.logIn(emailId, pwd))
-
-			{
-
 				eVal.validateAssignTicket(ticId);
-				return eTask.reassignTicket(emailId,toEmpId,ticId);
-				
-			}
-			return null;
+				if(eTask.reassignTicket(empl,toEmpId,ticId))
+				{
+					return true;
+				}
+				return false;
 		} catch (ValidationException e) {
 			throw new ServiceException("Enter proper inputs", e);
 		} catch (PersistenceException e) {
@@ -119,14 +105,24 @@ public class EmployeeService {
 			throw new ServiceException("Try a diff email id", e);
 		}
 	}
-	public void replyToTicket(int ticketId,int empId,String solution) throws ServiceException {
+	public List<TicketDetailsModel> viewTicketByDepartment(int depId) throws ServiceException {
 		try {
-			IssueModel issue=new IssueModel();
-			issue.setEmp(emp);
-			emp.setId(empId);
-			issue.setSolution(solution);
-			issue.setTic(tic);
-			tic.setId(ticketId);
+			
+			
+				ValidationUtil.isInvalidNumber(depId, "DepId");
+				return ticDAO.listByDepartmentId(depId);
+			
+		} catch (ValidationException e) {
+			throw new ServiceException("Enter proper inputs", e);
+		} catch (PersistenceException e) {
+			
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public void replyToTicket(IssueModel issue) throws ServiceException {
+		try {
+			
 				issVal.validateSave(issue);
 				eTask.replyTicket(issue);
 		

@@ -10,12 +10,14 @@ import com.ticket.model.IssueModel;
 import com.ticket.model.TicketAssignModel;
 import com.ticket.model.TicketDetailsModel;
 import com.ticket.util.ConnectionUtil;
-
+import com.ticket.util.MailUtil;
+import com.ticket.dao.GetEmail;
 public class EmployeeTasks {
 	int empId;
 	int ticId;
 	int roleId;
 	int deptId;
+
 	EmployeeModel emp1=new EmployeeModel();
 	EmployeeModel emp2=new EmployeeModel();
 	TicketDetailsModel tic=new TicketDetailsModel();
@@ -37,46 +39,66 @@ public class EmployeeTasks {
 				}
 				return false;
 	}
-	public String assignTicket(String emailId,int toEmpId,int ticId) throws PersistenceException{
-		empId=eDAO.getId(emailId);
-		roleId=eDAO.getRoleId(emailId);
+	public Boolean assignTicket(String emailId,int emp,int toEmpId,int ticId) throws PersistenceException{
+		
+		
 		deptId=eDAO.getDepartmentId(emailId);
-		if((ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(toEmpId))&&(deptId==ticDAO.getDeptId(ticId))&&(roleId==roleDAO.getRoleId("Admin")))
+		if((ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(toEmpId))&&(deptId==ticDAO.getDeptId(ticId)))
 		{
-		final String sql="update tbl_ticket_details set employee_id=? where id=?";
+		final String sql="update tbl_ticket_details set employee_id=?,updated_timestamp=now() where id=?";
 		final Object[] params={toEmpId,ticId};
 		jdbcTemplate.update(sql,params);
 		tic.setId(ticId);
 		emp1.setId(toEmpId);
-		emp2.setId(empId);
+		emp2.setId(emp);
 		ticAss.setEmp1(emp1);
 		ticAss.setEmp2(emp2);
 		ticAss.setTic(tic);
 		
 		ticAssDAO.save(ticAss);
-		return "Ticket assigned successfully";
+		GetEmail find=new GetEmail();
+		String emailId1=find.getEmployeeEmail(ticId);
+		try{
+			MailUtil.sendSimpleMail(emailId1,"The assigned ticket id is:",ticId);
+		
+}
+		catch(Exception e)
+		{
+	throw new PersistenceException("Mail not sent",e);
 		}
-		return "Unsuccessful Assignment";
+		return true;
+		}
+		return false;
 	}
-	public String reassignTicket(String emailId,int emp2Id,int ticId) throws PersistenceException{
-		empId=eDAO.getId(emailId);
-		if((ticDAO.checkEmployeeTicket(empId, ticId))&&(ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(emp2Id))){
+	public Boolean reassignTicket(int empl,int emp2Id,int ticId) throws PersistenceException{
+		
+		if((ticDAO.checkEmployeeTicket(empl,ticId))&&(ticDAO.getDeptId(ticId)==eDAO.getDepartmentIdByEmpId(emp2Id))){
 			
-		final String sql="update tbl_ticket_details set employee_id=? where id=?";
+		final String sql="update tbl_ticket_details set employee_id=?,updated_timestamp=now() where id=?";
 		final Object[] params={emp2Id,ticId};
 		jdbcTemplate.update(sql,params);
 		
 		tic.setId(ticId);
 		emp1.setId(emp2Id);
-		emp2.setId(empId);
+		emp2.setId(empl);
 		ticAss.setEmp1(emp1);
 		ticAss.setEmp2(emp2);
-		ticAss.setTic(tic);
+		ticAss.setTic(tic); 
 		
 		ticAssDAO.save(ticAss);
-		return "Ticket reassigned successfully";
+		GetEmail findEmp=new GetEmail();
+		String emailId1=findEmp.getEmployeeEmail(ticId);
+		try{
+			MailUtil.sendSimpleMail(emailId1,"The assigned ticket id is:",ticId);
+		
+}
+		catch(Exception e)
+		{
+	throw new PersistenceException("Mail not sent",e);
 		}
-		return "Unsuccessful Assignment";
+		return true;
+		}
+		return false;
 	}
 	public void deleteTicket(String emailId,int ticId) throws PersistenceException{
 		roleId=eDAO.getRoleId(emailId);
@@ -93,15 +115,35 @@ public class EmployeeTasks {
 		
 		return ticDAO.listByEmployeeId(empId);
 	}
-public void replyTicket(IssueModel issue) throws PersistenceException{
 	
-		if(ticDAO.checkEmployeeTicket(issue.getEmp().getId(), ticId)){
+	public void replyTicket(IssueModel issue) throws PersistenceException{
+	
+		GetEmail finds=new GetEmail();
 			iss.save(issue);
+			
 			tic.setStatus("RESOLVED");
 			tic.setId(issue.getTic().getId());
-			ticDAO.updateTicketStatus(tic);
-		}
+			
+			System.out.println(ticDAO.updateTicketStatus(tic));
+			
+			
+			String emailId1=finds.getUserEmail(issue.getTic().getId());
+			String emailId2=finds.getAdminEmail(issue.getTic().getId());
+			try{
+				MailUtil.sendSimpleMail(emailId1,"The solution is:"+issue.getSolution()+"The ticket id is:",issue.getTic().getId());
+		
+			
+			  MailUtil.sendSimpleMail(emailId2,"The solution is:"+issue.getSolution()+"The ticket id is:",issue.getTic().getId());
+			
+			
+			
+	}
+			catch(Exception e)
+			{
+		throw new PersistenceException("Mail not sent",e);
+			}
 		
 	}
+	
 	
 }

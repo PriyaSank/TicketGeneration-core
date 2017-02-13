@@ -17,25 +17,9 @@ public class UserModule {
 	TicketDetailsModel ticMod=new TicketDetailsModel();
 	TicketDetailsDAO tic=new TicketDetailsDAO();
 	UserLoginDAO log=new UserLoginDAO();
-//	
-//	 public String viewTicket(String emailId) throws DataAccessException, PersistenceException{
-//		Integer userId=uDAO.getUserId(emailId);
-//		List<Integer> idList=tic.listAllTicketId(userId);
-//		for(Integer l:idList){
-//			ticMod=tic.listById(l);
-//			
-//			
-//		}
-//		return ;
-//				
-//		
-//	}
-	
 		
  public boolean closeTicket(TicketDetailsModel tick) throws PersistenceException{
 
-
-	
 		int ticId=tick.getId();
 		if("CLOSED".equals(tic.getStatus(ticId))){
 			
@@ -45,7 +29,6 @@ public class UserModule {
 			{
 		
 
-		
 		final String sql2="update tbl_ticket_details set status=? where id=?";
 		final Object[] params2={"CLOSED",ticId};
 		jdbcTemplate.update(sql2,params2);

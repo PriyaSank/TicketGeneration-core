@@ -14,7 +14,7 @@ import com.ticket.util.ConnectionUtil;
 public class IssueDAO {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 	public void save(IssueModel issue){
-		final String sql="insert into tbl_issue_solutions(ticket_id,employee_id,solution) values(?,?,?)";
+		final String sql="insert into tbl_issue_solution(ticket_id,employee_id,solution) values(?,?,?)";
 		final Object[] params={issue.getTic().getId(),issue.getEmp().getId(),issue.getSolution()};
 		jdbcTemplate.update(sql,params);
 	}

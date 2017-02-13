@@ -19,17 +19,22 @@ public class TicketDetailsDAO  {
 	JdbcTemplate jdbcTemplate = ConnectionUtil.getJdbcTemplate();
 
 	public Boolean checkEmployeeTicket(int empId,int ticId){
-		final String sql="select 1 from tbl_ticket_details where employee_id=? where id=?";
+		final String sql="select employee_id from tbl_ticket_details where employee_id=? and id=?";
 		final Object[] params={empId,ticId};
+		System.out.println(empId+"-"+ticId);
+		int temp=(int) jdbcTemplate.queryForObject(sql,params,Integer.class);
+		if(temp==empId){
 		
-		return jdbcTemplate.queryForObject(sql,params,Boolean.class);
-		
+			return true;
+		}
+		return false;
 	}
-	public void updateTicketStatus(TicketDetailsModel tic){
-		final String sql="update tbl_ticket_details set status=? where id=?";
+	public Boolean updateTicketStatus(TicketDetailsModel tic){
+		final String sql="update tbl_ticket_details set status=?,updated_timestamp=now() where id=?";
 		final Object[] params={tic.getStatus(),tic.getId()};
 		
 		jdbcTemplate.update(sql,params);
+		return true;
 		
 	}
 	public void deleteTicket(int id){
@@ -62,7 +67,7 @@ public class TicketDetailsDAO  {
 	}
 	public List<TicketDetailsModel> listByUserId(int userId) throws PersistenceException{
 
-		final String sql = "select id,department_id,subject,description,priority_id,status from tbl_ticket_details where user_id=?";
+		final String sql = "select id,department_id,subject,description,priority_id,status from tbl_ticket_details where user_id=? and status!='CLOSED'";
 		final Object[] params={userId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert1(rs));
 		
@@ -76,9 +81,16 @@ public class TicketDetailsDAO  {
 	}
 	public List<TicketDetailsModel> listByEmployeeId(int empId) throws PersistenceException {
 
-		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where employee_id=?";
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,employee_id,updated_timestamp,status from tbl_ticket_details where employee_id=? and status!='CLOSED' and active=1";
 		final Object[] params={empId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert(rs));
+		
+	}
+	public List<TicketDetailsModel> listByDepartmentId(int depId) throws PersistenceException {
+
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,status from tbl_ticket_details where department_id=?";
+		final Object[] params={depId};
+		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert1(rs));
 		
 	}
 
