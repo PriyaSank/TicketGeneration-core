@@ -88,7 +88,7 @@ public class TicketDetailsDAO  {
 	}
 	public List<TicketDetailsModel> listByDepartmentId(int depId) throws PersistenceException {
 
-		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,status from tbl_ticket_details where department_id=?";
+		final String sql = "select id,user_id,department_id,subject,description,priority_id,open_timestamp,status from tbl_ticket_details where department_id=? and status!='CLOSED'";
 		final Object[] params={depId};
 		return jdbcTemplate.query(sql,params, (rs, rownum) -> convert1(rs));
 		
